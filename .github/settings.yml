@@ -1,0 +1,62 @@
+# For a reference on how to define settings, see: https://github.com/probot/settings#usage
+
+repository:
+  name: greenfield-workflows
+  description: Greenfield GitHub Actions Workflows
+  topics: github actions workflows
+  is_template: false
+  default_branch: main
+  allow_auto_merge: true
+  allow_squash_merge: true
+  allow_merge_commit: false
+  allow_rebase_merge: false
+  delete_branch_on_merge: true
+  enable_automated_security_fixes: true
+  enable_vulnerability_alerts: true
+
+teams:
+  - name: greenfields
+    permission: admin
+
+labels:
+  - name: bug
+    description: Something is broken
+    color: '#cc0000'
+  - name: chore
+    color: '#f2df8c'
+    description: Repository or code maintenance
+  - name: dependencies
+    color: '#70f9e0'
+    description: Update dependencies
+  - name: documentation
+    color: '#6cb524'
+    description: Change in the documentation
+  - name: feature
+    color: '#336699'
+    description: New functionality
+
+# This does a few things:
+# - force pushes to main are forbidden (PRs are mandatory to push to main)
+# - at least one code review approval
+# - if any file modified has an entry in CODEOWNERS, one code owner must approve
+# - branch must be up-to-date to merge
+# - the `Check` check must pass to merge
+# - commits must be signed
+# - repository admins cannot bypass these rules
+branches:
+  - name: main
+    protection:
+      required_conversation_resolution: true
+      required_pull_request_reviews:
+        required_approving_review_count: 1
+        dismiss_stale_reviews: false
+        require_code_owner_reviews: true
+        dismissal_restrictions: {}
+      required_status_checks:
+        strict: false
+        contexts:
+          - All required checks are successful
+      required_signatures: true
+      required_linear_history: true
+      enforce_admins: true
+      restrictions: null
