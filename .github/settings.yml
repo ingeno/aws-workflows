@@ -1,7 +1,7 @@
 # For a reference on how to define settings, see: https://github.com/probot/settings#usage
 
 repository:
-  name: greenfield-workflows
+  name: aws-workflows
   description: Greenfield GitHub Actions Workflows
   topics: github actions workflows
   is_template: false
