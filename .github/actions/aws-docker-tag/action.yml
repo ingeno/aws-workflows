@@ -20,5 +20,8 @@ runs:
     - name: Tag Docker Image
       shell: bash
       run: |
-        MANIFEST=$(aws ecr batch-get-image --repository-name ${{ inputs.repository }} --image-ids imageTag=${{ inputs.sourceTag }} --output json | jq --raw-output --join-output '.images[0].imageManifest')
-        aws ecr put-image --repository-name ${{ inputs.repository }} --image-tag ${{ inputs.targetTag }} --image-manifest "$MANIFEST"
+        EXISTING_TARGET_IMAGE_MANIFEST=$(aws ecr batch-get-image --repository-name ${{ inputs.repository }} --image-ids imageTag=${{ inputs.targetTag }} --output json)
+        if echo "${EXISTING_TARGET_IMAGE_MANIFEST}" | grep 'Requested image not found'; then
+          MANIFEST=$(aws ecr batch-get-image --repository-name ${{ inputs.repository }} --image-ids imageTag=${{ inputs.sourceTag }} --output json | jq --raw-output --join-output '.images[0].imageManifest')
+          aws ecr put-image --repository-name ${{ inputs.repository }} --image-tag ${{ inputs.targetTag }} --image-manifest "$MANIFEST"
+        fi
