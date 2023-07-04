@@ -1,6 +1,12 @@
 name: Node Setup
 description: Read .nvmrc, nvm use, cache and install
 
+inputs:
+  working-directory:
+    description: The current working directory to setup node into
+    required: false
+    default: '.'
+
 runs:
   using: 'composite'
 
@@ -14,6 +20,7 @@ runs:
       id: yarn-cache-dir-path
       shell: bash
       run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+      working-directory: ${{ inputs.working-directory }}
 
     - name: Cache Root Dependencies
       id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
@@ -26,4 +33,5 @@ runs:
 
     - name: Install Dependencies
       shell: bash
-      run: yarn install --immutable
+      run: yarn install --immutable --check-files
+      working-directory: ${{ inputs.working-directory }}
